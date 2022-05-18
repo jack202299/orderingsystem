@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/grhtml5-6.8-min.js"></script>
+
+    <script language="javascript" type="text/javascript">
+
+        function window_onload() {
+
+            //创建报表显示器，参数指定其在网页中的占位标签的ID，关联的报表模板URL，关联的报表数据URL
+            var reportViewer = window.rubylong.grhtml5.insertReportViewer("report_holder");
+
+            reportViewer.reportPrepared = false; //指定报表生成需要加载报表模板
+            reportViewer.dataPrepared = false;   //指定报表生成需要加载报表数据
+            var reportURL = "grf/d.txt";
+
+            var dataURL = "OrderDeTail/QueryPosData?id=" + getQueryString("id");
+
+            $.ajax({
+                type: "GET",
+                url: reportURL,
+                data: "",
+                success: function (msg) {
+                    reportViewer.loadReport(msg);
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: dataURL,
+                data: "",
+                success: function (msg) {
+                    console.log(msg);
+                    reportViewer.loadData(msg);
+                }
+            });
+
+        }
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return decodeURI(r[2]); //return unescape(r[2]);
+            }
+            return null;
+        }
+
+    </script>
+    <style>
+        td {
+            word-break: break-all;
+        }
+    </style>
+
+</head>
+<body onload="window_onload()">
+
+    <div id="report_holder"></div>
+
+</body>
+
+</html>
